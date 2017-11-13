@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PV2RXTLqI76RVvkYS7i16Yx8"></script>
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=  PV2RXTLqI76RVvkYS7i16Yx8"></script>
         <title></title>
         <style>
             body,
@@ -50,6 +50,7 @@
                 
             //通过H5的api获取GPS定位坐标
             if(navigator.geolocation) {
+                console.log('?????????')
                 navigator.geolocation.getCurrentPosition(function(position) {
                 console.log('??????????????@@@@##//', navigator.geolocation)
                     console.log(position.coords.longitude)
@@ -64,6 +65,8 @@
                             searchOper(point);
                         }
                     });
+                }, function(error) {
+                    alert(error, error.code)
                 });
             } else {
                 alert('当前设备GPS定位错误！')
