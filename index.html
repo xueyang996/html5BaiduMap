@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=PV2RXTLqI76RVvkYS7i16Yx8"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=DzFQ5ryIjeiolG6BS355myYy1wO6Wk4W"></script>
 		<title></title>
 		<style>
 			body,
@@ -37,85 +37,87 @@
 	<body>
 		<div id="map"></div>
 		<div id="result"></div>
+		<script>
+			window.onload = function(){
+			var distance = [];
+			var map = new BMap.Map("map");
+			var point = new BMap.Point(116.331398, 39.897445); //默认定位 北京
+			map.centerAndZoom(point, 12);
+			map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用 
+			map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+			
+			  //通过百度api的浏览器定位
+				var geolocation = new BMap.Geolocation();
+				geolocation.getCurrentPosition(function(r) {
+					if(this.getStatus() == BMAP_STATUS_SUCCESS) {
+						searchOper(r.point);
+					} else {
+						alert('failed' + this.getStatus());
+					}  
+				}, {
+					enableHighAccuracy: true
+				})
+				
+			function searchOper(point) {
+				map.clearOverlays();
+				map.panTo(new BMap.Point(point.lng, point.lat));
+				var PositionPoint = new BMap.Point(point.lng, point.lat);
+				var Marker = new BMap.Marker(PositionPoint);
+				map.addOverlay(Marker); //标注当前定位中心点
+
+				var local = new BMap.LocalSearch(map, {
+					renderOptions: {
+						map: map,
+						panel: "result"
+					},
+				});
+				local.clearResults();
+				local.setPageCapacity(4);
+				local.setLocation(map);
+				local.setResultsHtmlSetCallback(function(result) {
+					var data = local.getResults();
+					var liNodes = result.getElementsByTagName('li');
+					for(var i = 0; i < liNodes.length; i++) {
+						//计算两点间直线距离
+						var currentPoi = new BMap.Point(data.vr[i].point.lng, data.vr[i].point.lat)
+						distance[i] = Math.round(map.getDistance(currentPoi, PositionPoint)) + '米';
+						//动态添加div 
+						var distanceDiv = addDiv(distance[i]);
+						liNodes[i].getElementsByTagName('div')[0].appendChild(distanceDiv);
+					}
+					var resultPanel = document.getElementById('result');
+					var panel = resultPanel.getElementsByTagName('div')[0];
+					/*panel.style.fontSize = '14px';*/
+					var pageTurn = panel.childNodes[1];
+					pageTurn.style.paddingTop = '5px';
+					pageTurn.style.paddingBottom = '5px';
+					var span = pageTurn.getElementsByTagName('span');
+					for(var j = 0; j < span.length; j++) {
+						span[j].style.marginRight = '8px';
+					}
+					var mapHeight = document.body.offsetHeight - resultPanel.offsetHeight;
+					document.getElementById('map').style.height = mapHeight + 'px';
+				})
+				//进行检索 keyword：检索关键词， PositionPoint:周边检索中心点，10000：检索范围单位米
+				local.searchNearby('加油站', PositionPoint, 5000);
+				local.disableFirstResultSelection(); //禁用自动标注首个检索目标
+
+				function addDiv(distance) {
+					var distanceDiv = document.createElement('div');
+					distanceDiv.style = 'padding:2px 0;line-height: 18px;overflow: hidden;zoom: 1;';
+					var b = document.createElement('b');
+					b.style = 'float:left;font-weight:bold;*zoom:1;overflow:hidden;padding-right:5px;*margin-right:-3px;';
+					b.textContent = '距离:'
+					var span = document.createElement('span');
+					span.style.color = '#666';
+					span.textContent = distance;
+					distanceDiv.appendChild(b);
+					distanceDiv.appendChild(span);
+					return distanceDiv;
+				}
+			}
+		}
+		</script>
 	</body>
 
 </html>
-<script>
-	var distance = [];
-	var map = new BMap.Map("map");
-	var point = new BMap.Point(116.331398, 39.897445); //默认定位 北京
-	map.centerAndZoom(point, 12);
-	map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用 
-	map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-	
-	  //通过百度api的浏览器定位
-		var geolocation = new BMap.Geolocation();
-		geolocation.getCurrentPosition(function(r) {
-			if(this.getStatus() == BMAP_STATUS_SUCCESS) {
-				searchOper(r.point);
-			} else {
-				alert('failed' + this.getStatus());
-			}  
-		}, {
-			enableHighAccuracy: true
-		})
-		
-	function searchOper(point) {
-		map.clearOverlays();
-		map.panTo(new BMap.Point(point.lng, point.lat));
-		var PositionPoint = new BMap.Point(point.lng, point.lat);
-		var Marker = new BMap.Marker(PositionPoint);
-		map.addOverlay(Marker); //标注当前定位中心点
-
-		var local = new BMap.LocalSearch(map, {
-			renderOptions: {
-				map: map,
-				panel: "result"
-			},
-		});
-		local.clearResults();
-		local.setPageCapacity(4);
-		local.setLocation(map);
-		local.setResultsHtmlSetCallback(function(result) {
-			var data = local.getResults();
-			var liNodes = result.getElementsByTagName('li');
-			for(var i = 0; i < liNodes.length; i++) {
-				//计算两点间直线距离
-				var currentPoi = new BMap.Point(data.vr[i].point.lng, data.vr[i].point.lat)
-				distance[i] = Math.round(map.getDistance(currentPoi, PositionPoint)) + '米';
-				//动态添加div 
-				var distanceDiv = addDiv(distance[i]);
-				liNodes[i].getElementsByTagName('div')[0].appendChild(distanceDiv);
-			}
-			var resultPanel = document.getElementById('result');
-			var panel = resultPanel.getElementsByTagName('div')[0];
-			/*panel.style.fontSize = '14px';*/
-			var pageTurn = panel.childNodes[1];
-			pageTurn.style.paddingTop = '5px';
-			pageTurn.style.paddingBottom = '5px';
-			var span = pageTurn.getElementsByTagName('span');
-			for(var j = 0; j < span.length; j++) {
-				span[j].style.marginRight = '8px';
-			}
-			var mapHeight = document.body.offsetHeight - resultPanel.offsetHeight;
-			document.getElementById('map').style.height = mapHeight + 'px';
-		})
-		//进行检索 keyword：检索关键词， PositionPoint:周边检索中心点，10000：检索范围单位米
-		local.searchNearby('加油站', PositionPoint, 5000);
-		local.disableFirstResultSelection(); //禁用自动标注首个检索目标
-
-		function addDiv(distance) {
-			var distanceDiv = document.createElement('div');
-			distanceDiv.style = 'padding:2px 0;line-height: 18px;overflow: hidden;zoom: 1;';
-			var b = document.createElement('b');
-			b.style = 'float:left;font-weight:bold;*zoom:1;overflow:hidden;padding-right:5px;*margin-right:-3px;';
-			b.textContent = '距离:'
-			var span = document.createElement('span');
-			span.style.color = '#666';
-			span.textContent = distance;
-			distanceDiv.appendChild(b);
-			distanceDiv.appendChild(span);
-			return distanceDiv;
-		}
-	}
-</script>   
