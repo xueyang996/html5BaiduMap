@@ -95,6 +95,7 @@
             }
 
             function callback(_config) {
+                console.log(_config.corpId, _config.signature, _config)
                 dd.config({
                     agentId: '136185737',
                     corpId: _config.corpId,
