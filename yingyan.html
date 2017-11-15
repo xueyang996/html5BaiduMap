@@ -55,6 +55,7 @@
             function drawLine(lineArr) {
                 if (lineArr.length > 1) {
                     console.log("centerset")
+                    consoel.log(lineArr[1][0], typeof  lineArr[1][0])
                     var polyline = new AMap.Polyline({
                         path: lineArr, //设置线覆盖物路径
                         strokeColor: "#3366FF", //线颜色
@@ -130,8 +131,8 @@
                         callBackInterval: 10000, //回传时间间隔，ms
                         sceneId: 'yingyan', // 定位场景id,
                         onSuccess: function(result) {
-                            console.log(JSON.stringify(result), 'sdfsdf')
-                            positionArray.push([result.longitude, result.latitude]);
+                            console.log(result.longitude, typeof result.longitude)
+                            positionArray.push([result.longitude + '', result.latitude + '']);
                             drawLine(positionArray.slice(-2));
                         },
                         onFail: function(err) {
