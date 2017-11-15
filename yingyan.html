@@ -55,7 +55,6 @@
             function drawLine(lineArr) {
                 if (lineArr.length > 1) {
                     console.log("centerset")
-                    console.log(lineArr[1][0], typeof  lineArr[1][0])
                     var polyline = new AMap.Polyline({
                         path: lineArr, //设置线覆盖物路径
                         strokeColor: "#3366FF", //线颜色
@@ -66,7 +65,7 @@
                     });
                     polyline.setMap(map);
 
-                    map.setCenter(lineArr[1][0], lineArr[1][1]);
+                    map.setCenter(new AMap.LngLat(lineArr[1][0], lineArr[1][1]));
                 }
             }
 
@@ -133,7 +132,7 @@
                         onSuccess: function(result) {
                             console.log(JSON.stringify(result), 'hhh')
                             console.log(result.longitude, typeof result.longitude)
-                            positionArray.push([result.longitude + '', result.latitude + '']);
+                            positionArray.push([result.longitude, result.latitude]);
                             drawLine(positionArray.slice(-2));
                         },
                         onFail: function(err) {
