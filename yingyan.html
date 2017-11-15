@@ -88,16 +88,16 @@
             }
             function stopStartRecord() {
                 var $stopRecord = $('#stopRecord'),
-                    text = $stopRecord.text();
+                    text = $stopRecord.val();
 
                 if (text === '停止记录') {
                     clearInterval(intervalId);
                     intervalId = null;
-                    $('#stopRecord').text('开始记录');
+                    $('#stopRecord').val('开始记录');
                 } else {
                     startGPS();
                     intervalId = setInterval(startGPS, 10000);
-                    $('#stopRecord').text('停止记录');
+                    $('#stopRecord').val('停止记录');
                 }
             }
 
