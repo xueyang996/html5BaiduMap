@@ -53,6 +53,8 @@
             // }
 
             function drawLine(lineArr) {
+                map.setZoomAndCenter(14, [116.21, 39.91]);
+                return;
                 if (lineArr.length > 1) {
                     console.log("centerset")
                     var polyline = new AMap.Polyline({
