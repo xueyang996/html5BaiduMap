@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>浏览器定位</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css" />
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.1&key=7f557d5a3ac85ac7074a5ca30cffb935"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <script src="http://g.alicdn.com/dingding/open-develop/1.9.0/dingtalk.js"></script>
+    <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+    <script src="//cdn.bootcss.com/eruda/1.2.4/eruda.min.js"></script>
+    <script>eruda.init()</script>
+    <body>
+        <div id='container'></div>
+        <div id="tip"></div>
+        <div class="button-group">
+            <input type="button" class="button" value="清空轨迹" id="clearMap">
+            <input type="button" class="button" value="停止记录" id="stopRecord">
+            <input type="button" class="button" value="开始记录" id="startRecord" style="display: none">
+        </div>
+        <script type="text/javascript">
+            var map, geolocation, positionArray = [], lastMaker, intervalId, distance;
+            // 加载地图，调用浏览器定位服务
+            map = new AMap.Map('container', {
+                resizeEnable: true
+            });
+
+            function drawLine(lineArr) {
+                var len = lineArr.length - 1,
+                    arrayI = [lineArr[len][0], lineArr[len][1]];
+
+                if (lineArr.length > 1) {
+                    var polyline = new AMap.Polyline({
+                        path: lineArr, //设置线覆盖物路径
+                        strokeColor: "#3366FF", //线颜色
+                        strokeOpacity: 1, //线透明度
+                        strokeWeight: 5, //线宽
+                        strokeStyle: "solid", //线样式
+                        strokeDasharray: [10, 5] //补充线样式
+                    });
+                    polyline.setMap(map);
+                    // var lnglat = new AMap.LngLat(116.37, 39.92);
+                    
+                    //         alert('两点间距离为：' + lnglat.distance([116.39, 39.92]) + '米');
+
+                    //     console.log(lnglat.distance([116.39, 39.92]));
+
+                    // var lnglat = new AMap.LngLat(lineArr[0][0], lineArr[0][1]);
+                    // distance += lnglat.distance([lineArr[1][0], lineArr[1][1]]);
+                    // var distanceK = Math.ceil(distance) / 1000;
+                    // cosnole.log(distance, distanceK);
+                    // $('#tip').text('当前行驶距离'+ distanceK + '公里');
+                }
+                if(lastMaker) {
+                    map.remove([lastMaker]);
+                }
+                map.setZoomAndCenter(16, arrayI);
+                lastMaker = new AMap.Marker({
+                    map: map,
+                    position: arrayI
+                });
+            }
+
+            /**
+             * [ajaxQuery ajax请求]
+             * @param  {Function} callback [请求成功时回调函数]
+             * @param  {string}   url      [请求url]
+             * @param  {string}   data      [请求参数]
+             * @param  {string}   type      [请求类型，默认为get]
+             */
+            function ajaxQuery(callback, url, data, type) {
+                var dataInput = data || {},
+                    typeInput = type || 'GET';
+
+                if (typeInput.toLowerCase() === 'post') {
+                    dataInput = JSON.stringify(dataInput);
+                }
+
+                $.ajax({
+                    url: url,
+                    type: typeInput,
+                    contentType: 'application/json;charset=utf-8',
+                    dataType: "json",
+                    data: dataInput,
+                    success: function(data) {
+                        callback(data);
+                    },
+                    error: function() {
+                        alert('出错了');
+                    }
+                });
+            }
+            function stopRecord() {
+                $('#stopRecord').hide();
+                $('#startRecord').show();
+                stopGPS();
+                // clearInterval(intervalId);
+                // intervalId = null;
+            }
+            function startRecord() {
+                $('#stopRecord').show();
+                $('#startRecord').hide();
+                startGPS();
+                // intervalId = setInterval(startGPS, 10000);                
+            }
+
+            function clearMap() {
+                // if(intervalId) {
+                //     clearInterval(intervalId);
+                //     intervalId = null;
+                // }
+                stopGPS();
+                map.clearMap();
+                positionArray = [];
+                // $('#tip').text('当前行驶距离0公里');
+            }
+
+            function startGPS() {
+                dd.device.geolocation.start({
+                    targetAccuracy : 10, // 期望精确度
+                    iOSDistanceFilter: 10, // 变更感知精度(iOS端参数)
+                    useCache: false, // 是否使用缓存(Android端参数)
+                    withRegeocode : false, // 是否返回逆地理信息,默认否
+                    callBackInterval : 10000, //回传时间间隔，ms
+                    sceneId: 'yingyan', // 定位场景id,
+                    onSuccess : function(result) {
+                        positionArray.push([result.longitude, result.latitude]);
+                        drawLine(positionArray.slice(-2));
+                    },
+                    onFail : function(err) {}
+                });
+                return;
+                dd.device.geolocation.get({
+                    coordinate: 1,
+                    targetAccuracy: 10, // 期望精确度
+                    useCache: false, // 是否使用缓存(Android端参数)
+                    onSuccess: function(result) {
+                        positionArray.push([result.longitude, result.latitude]);
+                        drawLine(positionArray.slice(-2));
+                    },
+                    onFail: function(err) {
+                        console.log(JSON.stringify(err));
+                    }
+                });
+            }
+            function stopGPS(strartBoolean) {
+                dd.device.geolocation.stop({
+                    sceneId: 'yingyan', // 需要停止定位场景id
+                    onSuccess : function(result) {
+                        if (strartBoolean) {
+                            startGPS();
+                        }
+                    },
+                    onFail : function(err) {}
+                });
+            }
+            function callback(_config) {
+                dd.config({
+                    agentId: '136185737',
+                    corpId: _config.corpId,
+                    timeStamp: _config.timeStamp,
+                    nonceStr: _config.nonceStr,
+                    signature: _config.signature,
+                    jsApiList: ['device.geolocation.start', 'device.geolocation.stop']
+                    // jsApiList: ['device.geolocation.get']
+                });
+
+
+                dd.ready(function() {
+                    alert('hooookok!!!!@@??##***00');
+                    stopGPS(true);
+                    // startGPS();
+                    // intervalId = setInterval(startGPS, 10000);
+                });
+                dd.error(function(err) {
+                    alert('dd error: ' + JSON.stringify(err));
+                });
+                $('#stopRecord').on('click', stopRecord);
+                $('#startRecord').on('click', startRecord);
+                $('#clearMap').on('click', clearMap);
+            }
+            ajaxQuery(callback, 'http://106.14.137.241/servicecenter/dingdinglogin/getSign?type=yingyan');
+        </script>
+    </body>
+
+</html>
