@@ -107,6 +107,22 @@
                     onFail: function(err) {}
                 });
             }
+            function startGPS() {
+                dd.device.geolocation.get({
+                    coordinate: 1,
+                    targetAccuracy: 10, // 期望精确度
+                    useCache: false, // 是否使用缓存(Android端参数)
+                    onSuccess: function(result) {
+                        console.log(JSON.stringify(result), 'hhhhh000')
+                        console.log(result.longitude, typeof result.longitude)
+                        positionArray.push([result.longitude, result.latitude]);
+                        drawLine(positionArray.slice(-2));
+                    },
+                    onFail: function(err) {
+                        console.log(JSON.stringify(err))
+                    }
+                });
+            }
             function callback(_config) {
                 console.log(_config.corpId, _config.signature, _config, typeof _config)
                 dd.config({
@@ -115,33 +131,17 @@
                     timeStamp: _config.timeStamp,
                     nonceStr: _config.nonceStr,
                     signature: _config.signature,
-                    jsApiList: ['device.geolocation.start', 'device.geolocation.stop']
+                    jsApiList: ['device.geolocation.get', 'device.geolocation.stop']
+                    // jsApiList: ['device.geolocation.get', 'device.geolocation.stop']
                 });
 
 
                 dd.ready(function() {
                     alert('okok!!!!@@??');
-                    stopGPS();
-                    dd.device.geolocation.start({
-                        coordinate: 1,
-                        targetAccuracy: 10, // 期望精确度
-                        iOSDistanceFilter: 10, // 变更感知精度(iOS端参数)
-                        useCache: false, // 是否使用缓存(Android端参数)
-                        withRegeocode: false, // 是否返回逆地理信息,默认否
-                        callBackInterval: 10000, //回传时间间隔，ms
-                        sceneId: 'yingyan', // 定位场景id,
-                        onSuccess: function(result) {
-                            console.log(JSON.stringify(result), 'hhhhh')
-                            console.log(result.longitude, typeof result.longitude)
-                            positionArray.push([result.longitude, result.latitude]);
-                            drawLine(positionArray.slice(-2));
-                        },
-                        onFail: function(err) {
-                            console.log(JSON.stringify(err))
-                        }
-                    });
+                    // stopGPS();
+                    setInterval(startGPS, 10000);
                 });
-                $('#stopRecord').on('click', stopGPS);
+                // $('#stopRecord').on('click', stopGPS);
 
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
