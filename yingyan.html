@@ -18,10 +18,11 @@
         <div id='container'></div>
         <div id="tip"></div>
         <div class="button-group">
-            <input type="button" class="button" value="清空轨迹" id="stopRecord">
+            <input type="button" class="button" value="清空轨迹" id="clearMap">
+            <input type="button" class="button" value="停止记录" id="stopRecord">
         </div>
         <script type="text/javascript">
-            var map, geolocation, positionArray = [], lastMaker;
+            var map, geolocation, positionArray = [], lastMaker, intervalId;
             // 加载地图，调用浏览器定位服务
             map = new AMap.Map('container', {
                 resizeEnable: true
@@ -106,16 +107,15 @@
                     }
                 });
             }
-            function clearMap() {
-                map.clearMap();
-                // dd.device.geolocation.stop({
-                //     sceneId: 'yingyan', // 需要停止定位场景id
-                //     onSuccess: function(result) {
-                //         console.log(result);
-                //     },
-                //     onFail: function(err) {}
-                // });
+            function stopRecord() {
+                intervalId && clearInterval(intervalId);
             }
+
+            function clearMap() {
+                intervalId && clearInterval(intervalId);
+                map.clearMap();
+            }
+
             function startGPS() {
                 dd.device.geolocation.get({
                     coordinate: 1,
@@ -126,7 +126,7 @@
                         drawLine(positionArray.slice(-2));
                     },
                     onFail: function(err) {
-                        console.log(JSON.stringify(err))
+                        console.log(JSON.stringify(err));
                     }
                 });
             }
@@ -137,18 +137,19 @@
                     timeStamp: _config.timeStamp,
                     nonceStr: _config.nonceStr,
                     signature: _config.signature,
-                    jsApiList: ['device.geolocation.get', 'device.geolocation.stop']
+                    jsApiList: ['device.geolocation.get']
                     // jsApiList: ['device.geolocation.get', 'device.geolocation.stop']
                 });
 
 
                 dd.ready(function() {
-                    alert('hooookok!!!!@@??##***');
+                    alert('hooookok!!!!@@??##***00');
                     startGPS();
                     // stopGPS();
-                    setInterval(startGPS, 10000);
+                    intervalId = setInterval(startGPS, 10000);
                 });
-                $('#stopRecord').on('click', clearMap);
+                $('#stopRecord').on('click', stopRecord);
+                $('#clearMap').on('click', clearMap);
 
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
