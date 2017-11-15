@@ -65,7 +65,7 @@
                     });
                     polyline.setMap(map);
 
-                    map.setCenter([lineArr[1][0], lineArr[1][1]]);
+                    map.setCenter(lineArr[1][0], lineArr[1][1]);
                 }
             }
 
@@ -120,9 +120,10 @@
 
 
                 dd.ready(function() {
-                    alert('okok!!!!@@');
+                    alert('okok!!!!@@??');
                     stopGPS();
                     dd.device.geolocation.start({
+                        coordinate: 1,
                         targetAccuracy: 10, // 期望精确度
                         iOSDistanceFilter: 10, // 变更感知精度(iOS端参数)
                         useCache: false, // 是否使用缓存(Android端参数)
