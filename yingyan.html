@@ -121,12 +121,13 @@
                         callBackInterval: 10000, //回传时间间隔，ms
                         sceneId: 'yingyan', // 定位场景id,
                         onSuccess: function(result) {
-                            alert(result)
+                            console.log('sdfsdf')
+                            console.log(JSON.stringify(result), 'sdfsdf')
                             positionArray.push([result.longitude, result.latitude]);
                             drawLine(positionArray.slice(-2));
                         },
                         onFail: function(err) {
-                            alert(err)
+                            console.log(JSON.stringify(err))
                         }
                     });
                 });
