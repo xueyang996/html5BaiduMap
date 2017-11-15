@@ -21,7 +21,7 @@
             <input type="button" class="button" value="清空轨迹" id="stopRecord">
         </div>
         <script type="text/javascript">
-            var map, geolocation, positionArray = [];
+            var map, geolocation, positionArray = [], lastMaker;
             // 加载地图，调用浏览器定位服务
             map = new AMap.Map('container', {
                 resizeEnable: true
@@ -57,7 +57,6 @@
                     arrayI = [lineArr[len][0], lineArr[len][1]];
 
                 if (lineArr.length > 1) {
-                    console.log("centerset@@")
                     var polyline = new AMap.Polyline({
                         path: lineArr, //设置线覆盖物路径
                         strokeColor: "#3366FF", //线颜色
@@ -68,9 +67,11 @@
                     });
                     polyline.setMap(map);
                 }
-
+                if(lastMaker) {
+                    map.remove([lastMaker]);
+                }
                 map.setZoomAndCenter(16, arrayI);
-                var marker = new AMap.Marker({
+                lastMaker = new AMap.Marker({
                     map: map,
                     position: arrayI
                 });
@@ -105,14 +106,15 @@
                     }
                 });
             }
-            function stopGPS() {
-                dd.device.geolocation.stop({
-                    sceneId: 'yingyan', // 需要停止定位场景id
-                    onSuccess: function(result) {
-                        console.log(result);
-                    },
-                    onFail: function(err) {}
-                });
+            function clearMap() {
+                map.clearMap();
+                // dd.device.geolocation.stop({
+                //     sceneId: 'yingyan', // 需要停止定位场景id
+                //     onSuccess: function(result) {
+                //         console.log(result);
+                //     },
+                //     onFail: function(err) {}
+                // });
             }
             function startGPS() {
                 dd.device.geolocation.get({
@@ -120,8 +122,6 @@
                     targetAccuracy: 10, // 期望精确度
                     useCache: false, // 是否使用缓存(Android端参数)
                     onSuccess: function(result) {
-                        console.log(JSON.stringify(result), 'hhhhh000')
-                        console.log(result.longitude, typeof result.longitude)
                         positionArray.push([result.longitude, result.latitude]);
                         drawLine(positionArray.slice(-2));
                     },
@@ -131,7 +131,6 @@
                 });
             }
             function callback(_config) {
-                console.log(_config.corpId, _config.signature, _config, typeof _config)
                 dd.config({
                     agentId: '136185737',
                     corpId: _config.corpId,
@@ -144,12 +143,12 @@
 
 
                 dd.ready(function() {
-                    alert('nookok!!!!@@??##***');
+                    alert('hooookok!!!!@@??##***');
                     startGPS();
                     // stopGPS();
                     setInterval(startGPS, 10000);
                 });
-                // $('#stopRecord').on('click', stopGPS);
+                $('#stopRecord').on('click', clearMap);
 
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
