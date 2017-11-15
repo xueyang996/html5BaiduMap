@@ -13,7 +13,6 @@
     <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
     <script src="//cdn.bootcss.com/eruda/1.2.4/eruda.min.js"></script>
     <script>eruda.init()</script>
-
     <body>
         <div id='container'></div>
         <div id="tip"></div>
@@ -22,36 +21,11 @@
             <input type="button" class="button" value="停止记录" id="stopRecord">
         </div>
         <script type="text/javascript">
-            var map, geolocation, positionArray = [], lastMaker, intervalId;
+            var map, geolocation, positionArray = [], lastMaker, intervalId, distance;
             // 加载地图，调用浏览器定位服务
             map = new AMap.Map('container', {
                 resizeEnable: true
             });
-            // map.plugin('AMap.Geolocation', function() {
-            //     geolocation = new AMap.Geolocation({
-            //         enableHighAccuracy: true, //是否使用高精度定位，默认:true
-            //         timeout: 10000, //超过10秒后停止定位，默认：无穷大
-            //         buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            //         zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            //         buttonPosition: 'RB'
-            //     });
-            //     map.addControl(geolocation);
-            //     // geolocation.getCurrentPosition();
-            //     // AMap.event.addListener(geolocation, 'complete', onComplete); //返回定位信息
-            //     // AMap.event.addListener(geolocation, 'error', onError); //返回定位出错信息
-            // });
-            // setInterval(function() {
-            //     geolocation.getCurrentPosition();
-            // }, 10000);
-            //解析定位结果
-            // function onComplete(data) {
-            //     positionArray.push([data.position.getLng(), data.position.getLat()]);
-            //     drawLine(positionArray.slice(-2));
-            // }
-            // //解析定位错误信息
-            // function onError(data) {
-            //     document.getElementById('tip').innerHTML = '定位失败';
-            // }
 
             function drawLine(lineArr) {
                 var len = lineArr.length - 1,
@@ -67,6 +41,11 @@
                         strokeDasharray: [10, 5] //补充线样式
                     });
                     polyline.setMap(map);
+                    var lnglat = new AMap.LngLat(lineArr[0][0], lineArr[0][1]);
+                    distance += lnglat.distance([lineArr[1][0], lineArr[1][1]]);
+                    var distanceK = Math.ceil(distance) / 1000;
+                    cosnole.log(distance, distanceK);
+                    $('#tip').text('当前行驶距离'+ distanceK + '公里');
                 }
                 if(lastMaker) {
                     map.remove([lastMaker]);
@@ -108,11 +87,17 @@
                 });
             }
             function stopRecord() {
-                intervalId && clearInterval(intervalId);
+                if(intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
             }
 
             function clearMap() {
-                intervalId && clearInterval(intervalId);
+                if(intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
                 map.clearMap();
             }
 
@@ -145,15 +130,13 @@
                 dd.ready(function() {
                     alert('hooookok!!!!@@??##***00');
                     startGPS();
-                    // stopGPS();
                     intervalId = setInterval(startGPS, 10000);
                 });
-                $('#stopRecord').on('click', stopRecord);
-                $('#clearMap').on('click', clearMap);
-
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
                 });
+                $('#stopRecord').on('click', stopRecord);
+                $('#clearMap').on('click', clearMap);
             }
             ajaxQuery(callback, 'http://192.168.31.19:8080/dingdinglogin/getSign?type=yingyan');
         </script>
