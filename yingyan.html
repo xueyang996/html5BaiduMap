@@ -19,6 +19,7 @@
         <div class="button-group">
             <input type="button" class="button" value="清空轨迹" id="clearMap">
             <input type="button" class="button" value="停止记录" id="stopRecord">
+            <input type="button" class="button" value="开始记录" id="startRecord" style="display: none">
         </div>
         <script type="text/javascript">
             var map, geolocation, positionArray = [], lastMaker, intervalId, distance;
@@ -86,19 +87,17 @@
                     }
                 });
             }
-            function stopStartRecord() {
-                var $stopRecord = $('#stopRecord'),
-                    text = $stopRecord.val();
-
-                if (text === '停止记录') {
-                    clearInterval(intervalId);
-                    intervalId = null;
-                    $('#stopRecord').val('开始记录');
-                } else {
-                    startGPS();
-                    intervalId = setInterval(startGPS, 10000);
-                    $('#stopRecord').val('停止记录');
-                }
+            function stopRecord() {
+                $('#stopRecord').hide();
+                $('#startRecord').show();
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            function startRecord() {
+                $('#stopRecord').show();
+                $('#startRecord').hide();
+                startGPS();
+                intervalId = setInterval(startGPS, 10000);                
             }
 
             function clearMap() {
@@ -145,7 +144,8 @@
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
                 });
-                $('#stopRecord').on('click', stopStartRecord);
+                $('#stopRecord').on('click', stopRecord);
+                $('#startRecord').on('click', startRecord);
                 $('#clearMap').on('click', clearMap);
             }
             ajaxQuery(callback, 'http://192.168.31.19:8080/dingdinglogin/getSign?type=yingyan');
