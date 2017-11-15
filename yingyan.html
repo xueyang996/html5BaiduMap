@@ -65,7 +65,9 @@
                     });
                     polyline.setMap(map);
 
-                    map.setCenter(new AMap.LngLat(lineArr[1][0], lineArr[1][1]));
+                    map.setCenter(lineArr[1][0], lineArr[1][1]);
+                } else {
+                    map.setCenter(lineArr[0][0], lineArr[0][1]);
                 }
             }
 
@@ -138,6 +140,7 @@
 
                 dd.ready(function() {
                     alert('okok!!!!@@??');
+                    startGPS();
                     // stopGPS();
                     setInterval(startGPS, 10000);
                 });
