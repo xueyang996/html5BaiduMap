@@ -120,7 +120,7 @@
 
 
                 dd.ready(function() {
-                    alert('okok!!!!');
+                    alert('okok!!!!@@');
                     stopGPS();
                     dd.device.geolocation.start({
                         targetAccuracy: 10, // 期望精确度
@@ -130,7 +130,7 @@
                         callBackInterval: 10000, //回传时间间隔，ms
                         sceneId: 'yingyan', // 定位场景id,
                         onSuccess: function(result) {
-                            console.log(JSON.stringify(result), 'hhh')
+                            console.log(JSON.stringify(result), 'hhhhh')
                             console.log(result.longitude, typeof result.longitude)
                             positionArray.push([result.longitude, result.latitude]);
                             drawLine(positionArray.slice(-2));
