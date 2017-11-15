@@ -97,7 +97,15 @@
                     }
                 });
             }
-
+            function stopGPS() {
+                dd.device.geolocation.stop({
+                    sceneId: 'yingyan', // 需要停止定位场景id
+                    onSuccess: function(result) {
+                        console.log(result);
+                    },
+                    onFail: function(err) {}
+                });
+            }
             function callback(_config) {
                 console.log(_config.corpId, _config.signature, _config, typeof _config)
                 dd.config({
@@ -113,6 +121,7 @@
                 dd.ready(function() {
                     alert('okok');
                     console.log('oklema');
+                    stopGPS();
                     dd.device.geolocation.start({
                         targetAccuracy: 10, // 期望精确度
                         iOSDistanceFilter: 10, // 变更感知精度(iOS端参数)
@@ -131,15 +140,7 @@
                         }
                     });
                 });
-                $('#stopRecord').on('click', function() {
-                    dd.device.geolocation.stop({
-                        sceneId: 'yingyan', // 需要停止定位场景id
-                        onSuccess: function(result) {
-                            console.log(result);
-                        },
-                        onFail: function(err) {}
-                    });
-                });
+                $('#stopRecord').on('click', stopGPS);
 
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
