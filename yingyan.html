@@ -17,6 +17,9 @@
     <body>
         <div id='container'></div>
         <div id="tip"></div>
+        <div class="button-group">
+            <input type="button" class="button" value="清空轨迹" id="stopRecord">
+        </div>
         <script type="text/javascript">
             var map, geolocation, positionArray = [];
             // 加载地图，调用浏览器定位服务
@@ -84,6 +87,7 @@
                     url: url,
                     type: typeInput,
                     contentType: 'application/json;charset=utf-8',
+                    dataType: "json",
                     data: dataInput,
                     success: function(data) {
                         callback(data);
