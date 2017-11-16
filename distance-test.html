@@ -7,7 +7,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>浏览器定位距离</title>
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css" />
-    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.1&key=你的key"></script>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.1&key=7f557d5a3ac85ac7074a5ca30cffb935"></script>
     <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
     <script src="http://g.alicdn.com/dingding/open-develop/1.9.0/dingtalk.js"></script>
     <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
@@ -112,13 +112,14 @@
                 //     intervalId = null;
                 // }
                 stopRecord();
-                var allOverLay = map.getAllOverlays();
-                map.remove([allOverLay]);
+                var markOverLay = map.getAllOverlays('marker');
+                var polyOverLay = map.getAllOverlays('polyline');
+                map.remove([markOverLay, polyOverLay]);
 
                 // map.clearMap();
                 positionArray = [];
                 $('#tip').text('当前行驶距离0公里');
-                console.log('????????')
+                console.log('????????');
             }
 
             function startGPS() {
@@ -191,7 +192,7 @@
                 $('#startRecord').on('click', startRecord);
                 $('#clearMap').on('click', clearMap);
             }
-            ajaxQuery(callback, 'youurl');
+            ajaxQuery(callback, 'http://192.168.31.19:8080/dingdinglogin/getSign?type=yingyantest');
         </script>
     </body>
 
