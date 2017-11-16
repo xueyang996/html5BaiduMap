@@ -112,11 +112,9 @@
                 //     intervalId = null;
                 // }
                 stopRecord();
-                var markOverLay = map.getAllOverlays('marker');
-                map.remove([markOverLay]);
-                var polyOverLay = map.getAllOverlays('polyline');
-                map.remove([polyOverLay]);
-
+                var allOverLay = map.getAllOverlays();
+                console.log(allOverLay instanceof Array);
+                map.remove(allOverLay);
                 // map.clearMap();
                 positionArray = [];
                 $('#tip').text('当前行驶距离0公里');
