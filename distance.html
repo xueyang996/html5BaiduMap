@@ -57,7 +57,7 @@
                     var lnglat = new AMap.LngLat(pointALng, pointALat);
                     distance += lnglat.distance([pointBLng, pointBLat]);
                     var distanceK = Math.ceil(distance) / 1000;
-                    cosnole.log(distance, distanceK);
+                    console.log(distance, distanceK);
                     $('#tip').text('当前行驶距离'+ distanceK + '公里');
                 }
                 if(lastMaker) {
