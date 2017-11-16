@@ -1,18 +1,15 @@
 <!doctype html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <title>浏览器定位dd</title>
+    <title></title>
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css" />
     <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.1&key=7f557d5a3ac85ac7074a5ca30cffb935"></script>
     <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
     <script src="http://g.alicdn.com/dingding/open-develop/1.9.0/dingtalk.js"></script>
     <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
-    <script src="//cdn.bootcss.com/eruda/1.2.4/eruda.min.js"></script>
-    <script>eruda.init()</script>
     <body>
         <div id='container'></div>
         <div id="tip"></div>
@@ -51,8 +48,7 @@
                     var lnglat = new AMap.LngLat(pointALng, pointALat);
                     distance += lnglat.distance([pointBLng, pointBLat]);
                     var distanceK = Math.ceil(distance) / 1000;
-                    console.log(distance, distanceK);
-                    $('#tip').text('当前行驶距离'+ distanceK + '公里');
+                    // $('#tip').text('当前行驶距离'+ distanceK + '公里');
                 }
                 if(lastMaker) {
                     map.remove([lastMaker]);
@@ -97,27 +93,20 @@
                 $('#stopRecord').hide();
                 $('#startRecord').show();
                 stopGPS();
-                // clearInterval(intervalId);
-                // intervalId = null;
             }
             function startRecord() {
                 $('#stopRecord').show();
                 $('#startRecord').hide();
-                startGPS();
-                // intervalId = setInterval(startGPS, 10000);                
+                startGPS();           
             }
 
             function clearMap() {
-                // if(intervalId) {
-                //     clearInterval(intervalId);
-                //     intervalId = null;
-                // }
                 stopRecord();
                 var allOverLay = map.getAllOverlays();
                 map.remove([allOverLay]);
-                // map.clearMap();
+                // map.clearMap(); // 多次点击后会失效，所以替换成上面的方法
                 positionArray = [];
-                $('#tip').text('当前行驶距离0公里');
+                // $('#tip').text('当前行驶距离0公里');
             }
 
             function startGPS() {
@@ -135,7 +124,7 @@
                     onFail : function(err) {}
                 });
                 return;
-                dd.device.geolocation.get({
+                dd.device.geolocation.get({ // 只能定位单次，定时器任务也不能获取最新位置
                     coordinate: 1,
                     targetAccuracy: 10, // 期望精确度
                     useCache: false, // 是否使用缓存(Android端参数)
@@ -157,7 +146,6 @@
                         }
                     },
                     onFail : function(err) {
-                        alert('stopGPSErr')
                         if (strartBoolean) {
                             startGPS();
                         }
@@ -178,8 +166,6 @@
 
                 dd.ready(function() {
                     stopGPS(true);
-                    // startGPS();
-                    // intervalId = setInterval(startGPS, 10000);
                 });
                 dd.error(function(err) {
                     alert('dd error: ' + JSON.stringify(err));
@@ -191,5 +177,4 @@
             ajaxQuery(callback, 'http://106.14.137.241/servicecenter/dingdinglogin/getSign?type=yingyand');
         </script>
     </body>
-
 </html>
