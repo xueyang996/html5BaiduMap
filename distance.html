@@ -22,7 +22,7 @@
             <input type="button" class="button" value="开始记录" id="startRecord" style="display: none">
         </div>
         <script type="text/javascript">
-            var map, geolocation, positionArray = [], lastMaker, intervalId, distance;
+            var map, geolocation, positionArray = [], lastMaker, intervalId, distance = 0;
             // 加载地图，调用浏览器定位服务
             map = new AMap.Map('container', {
                 resizeEnable: true
