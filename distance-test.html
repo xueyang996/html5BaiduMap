@@ -113,13 +113,14 @@
                 // }
                 stopRecord();
                 var markOverLay = map.getAllOverlays('marker');
+                map.remove([markOverLay]);
                 var polyOverLay = map.getAllOverlays('polyline');
-                map.remove([markOverLay, polyOverLay]);
+                map.remove([polyOverLay]);
 
                 // map.clearMap();
                 positionArray = [];
                 $('#tip').text('当前行驶距离0公里');
-                console.log('????????');
+                console.log('????????@@@');
             }
 
             function startGPS() {
