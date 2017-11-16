@@ -113,12 +113,12 @@
                 // }
                 stopRecord();
                 var allOverLay = map.getAllOverlays();
-                console.log(allOverLay, allOverLay.toString());
-                // map.remove([allOverLay]);
+                map.remove([allOverLay]);
 
                 // map.clearMap();
                 positionArray = [];
                 $('#tip').text('当前行驶距离0公里');
+                console.log('????????')
             }
 
             function startGPS() {
