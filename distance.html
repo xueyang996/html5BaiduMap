@@ -132,6 +132,8 @@
                     callBackInterval : 10000, //回传时间间隔，ms
                     sceneId: 'yingyan', // 定位场景id,
                     onSuccess : function(result) {
+                    console.log(result.longitude, typeof result.latitude)
+                    console.log('========')
                         positionArray.push([result.longitude, result.latitude]);
                         drawLine(positionArray.slice(-2));
                     },
