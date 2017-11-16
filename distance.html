@@ -46,14 +46,7 @@
                         strokeDasharray: [10, 5] //补充线样式
                     });
                     polyline.setMap(map);
-                    var lnglat = new AMap.LngLat(116.37, 39.92);
                     
-                            alert('两点间距离为：' + lnglat.distance([116.39, 39.92]) + '米');
-
-                    console.log(pointALng, typeof pointALng)
-                    console.log(pointALat, typeof pointALat)
-                    console.log(pointBLng, typeof pointBLng)
-                    console.log(pointBLat, typeof pointBLat)
                     var lnglat = new AMap.LngLat(pointALng, pointALat);
                     distance += lnglat.distance([pointBLng, pointBLat]);
                     var distanceK = Math.ceil(distance) / 1000;
@@ -118,8 +111,12 @@
                 //     clearInterval(intervalId);
                 //     intervalId = null;
                 // }
-                stopGPS();
-                map.clearMap();
+                stopRecord();
+                var allOverLay = map.getAllOverlays();
+                console.log(allOverLay, allOverLay.toString());
+                map.remove([allOverLay]);
+
+                // map.clearMap();
                 positionArray = [];
                 $('#tip').text('当前行驶距离0公里');
             }
@@ -133,7 +130,6 @@
                     callBackInterval : 10000, //回传时间间隔，ms
                     sceneId: 'yingyan', // 定位场景id,
                     onSuccess : function(result) {
-                    console.log(result.longitude, typeof result.latitude)
                     console.log('========')
                         positionArray.push([result.longitude, result.latitude]);
                         drawLine(positionArray.slice(-2));
@@ -183,7 +179,7 @@
 
 
                 dd.ready(function() {
-                    alert('hooookok!!!!@@??##***00');
+                    alert('##***00');
                     stopGPS(true);
                     // startGPS();
                     // intervalId = setInterval(startGPS, 10000);
