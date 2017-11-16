@@ -48,8 +48,11 @@
 
                         console.log(lnglat.distance([116.39, 39.92]));
 
-                    // var lnglat = new AMap.LngLat(lineArr[0][0], lineArr[0][1]);
-                    // distance += lnglat.distance([lineArr[1][0], lineArr[1][1]]);
+                    var lnglat = new AMap.LngLat(lineArr[0][0], lineArr[0][1]);
+                    console.log('nacule');
+                    distance += lnglat.distance([lineArr[1][0], lineArr[1][1]]);
+                    console.log('naculezhelima');
+                    console.log(distance);
                     // var distanceK = Math.ceil(distance) / 1000;
                     // cosnole.log(distance, distanceK);
                     // $('#tip').text('当前行驶距离'+ distanceK + '公里');
