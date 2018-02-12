@@ -102,9 +102,10 @@
 
             function clearMap() {
                 stopRecord();
-                var allOverLay = map.getAllOverlays();
-                map.remove([allOverLay]);
-                // map.clearMap(); // 多次点击后会失效，所以替换成上面的方法
+                // var allOverLay = map.getAllOverlays();
+                // map.remove(allOverLay);
+                map.clearMap(); // 多次点击后会失效，所以替换成上面的方法
+                window.location.reload();
                 positionArray = [];
                 // $('#tip').text('当前行驶距离0公里');
             }
